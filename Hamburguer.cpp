@@ -34,6 +34,9 @@ void Hamburguer::vazio(){
 }
 
 void Hamburguer::poeIngrediente(int i){
-    Ingredientes[i] += 1;
-    cout << i << ": " << Ingredientes[i]<< endl;
+    int X = Ingredientes[i];
+    X++;
+    cout << "Antes: " << i << " = " << Ingredientes[i] << "\n X = " << X << endl;
+    Ingredientes[i] = X;
+    cout << "Depois: " << i << " = " << Ingredientes[i]<< endl;
 }

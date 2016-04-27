@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "Fila.h"
 #include "Hamburguer.h"
-#include "Pilha.h"
 
 #define heigth  600
 #define width   800
@@ -11,13 +10,15 @@
 int ComparaHamburguer(Fila pedidos, Hamburguer burgue){
     int i, cmp = 0;
     Hamburguer *first = new Hamburguer;
-    //first->vazio();
+    first->vazio();
     if(pedidos.Remover(*first))
         printf("removeu\n");
     else
         printf("bugou\n");
+    //first.vazio();
     for(i = 0; i < 8; i++){
         if(first->retornaIngrediente(i) == burgue.retornaIngrediente(i)){
+            //printf("cmp: %d i: %d\nfirst: %d\nburgue: %d\n", cmp, i, first.retornaIngrediente(i), burgue.retornaIngrediente(i));
             cmp++;
         }
     }
@@ -46,12 +47,12 @@ int botoes(Hamburguer *atual, Fila pedidos){
         pos += 1;
     else if(mouse_y > 325 && mouse_y < 445)
         pos += 2;
-    else if(mouse_y > 470 && mouse_y < 590 && pos != 30)
+    else if(mouse_y > 470 && mouse_y < 590)
         pos += 3;
     else if(mouse_y >= 539 && mouse_y <= 593)
         pos += 4;
-
-
+        
+        
 
     switch(pos){
     case 11:
@@ -85,7 +86,7 @@ int botoes(Hamburguer *atual, Fila pedidos){
         break;
     }
     //centraliza o mouse para impedir cliques extras
-    //position_mouse(width/2,heigth/2);
+    position_mouse(width/2,heigth/2);
     return feito;
 }
 
@@ -94,7 +95,7 @@ int main(void)
     int i = 0, ing;
     bool fazendo = 0, certo = 0, click = 0;
     Hamburguer Fazendo;
-    //Fazendo.vazio();
+    Fazendo.vazio();
     srand(time(NULL));
 
     //cria e preenche pedidos
@@ -120,25 +121,16 @@ int main(void)
     BITMAP *BURGUE2 = load_bitmap("Imagens/burgue2.bmp", NULL);
     BITMAP *FUNDO   = load_bitmap("Imagens/fundo.bmp", NULL);
     BITMAP *HAMBURGUER_CIMA_ICONE = load_bitmap("Imagens/hamburguercima_icone.bmp", NULL);
-    BITMAP *HAMBURGUER_CIMA = load_bitmap("Imagens/hamburguercima.bmp", NULL);
     BITMAP *HAMBURGUER_BAIXO_ICONE = load_bitmap("Imagens/hamburguerbaixo_icone.bmp", NULL);
-    BITMAP *HAMBURGUER_BAIXO = load_bitmap("Imagens/hamburguerbaixo.bmp", NULL);
-    BITMAP *CARNE_ICONE = load_bitmap("Imagens/carne_icone.bmp", NULL);
-    BITMAP *CARNE = load_bitmap("Imagens/carne.bmp", NULL);
+    BITMAP *CARNE_ICONE = load_bitmap("Imagens/carne_icone1.bmp", NULL);
     BITMAP *QUEIJO_ICONE = load_bitmap("Imagens/queijo_icone.bmp", NULL);
-    BITMAP *QUEIJO = load_bitmap("Imagens/queijo.bmp", NULL);
     BITMAP *ALFACE_ICONE = load_bitmap("Imagens/alface_icone.bmp", NULL);
-    BITMAP *ALFACE = load_bitmap("Imagens/alface.bmp", NULL);
     BITMAP *BACON_ICONE = load_bitmap("Imagens/bacon_icone.bmp", NULL);
-    BITMAP *BACON = load_bitmap("Imagens/bacon.bmp", NULL);
     BITMAP *PICLES_ICONE = load_bitmap("Imagens/Picles_icone.bmp", NULL);
-    BITMAP *PICLES = load_bitmap("Imagens/Picles.bmp", NULL);
     BITMAP *TOMATE_ICONE = load_bitmap("Imagens/tomate_icone.bmp", NULL);
-    //BITMAP *TOMATE_ICONE = load_bitmap("Imagens/tomate_icone.bmp", NULL);
-
     BITMAP *buffer  = create_bitmap(width, heigth);
 
-    //set_mouse_sprite(BURGUE2);
+    //blit(FUNDO, screen, 0, 0, 0, 0, width, heigth);
     show_mouse(screen);
 
 //________________________________________Fim_Allegro______________________________________________________
@@ -148,12 +140,11 @@ int main(void)
         if(!fazendo){//Cria hamburguer para ser preenchido e trava impede criação de novos
             printf("Aqui nois faiz\n");
             Hamburguer *Fazendo;
-            //Pilha Ingredientes;
             //Fazendo.vazio();
             fazendo = 1;
         }
 
-        //blit(FUNDO, buffer, 0, 0, 0, 0, width, heigth);
+        blit(FUNDO, buffer, 0, 0, 0, 0, width, heigth);
         draw_sprite(buffer, CARNE_ICONE, 0, 180);
         draw_sprite(buffer, QUEIJO_ICONE, 0, 325);
         draw_sprite(buffer, BACON_ICONE, 0, 470);
@@ -161,13 +152,7 @@ int main(void)
         draw_sprite(buffer, TOMATE_ICONE, 680, 325);
         draw_sprite(buffer, PICLES_ICONE, 680,470);
 
-        draw_sprite(buffer, CARNE, 0, 180);
-        draw_sprite(buffer, QUEIJO, 0, 325);
-        draw_sprite(buffer, BACON, 0, 470);
-        //draw_sprite(buffer, ALFACE, 680, 180);
-        draw_sprite(buffer, PICLES, 680,470);
-
-        /*if(keypressed()){
+        if(keypressed()){
             int burgui = readkey();
             if(burgui == 7217){
                 draw_sprite(buffer, BURGUE, (width - BURGUE->w)/2, (heigth - BURGUE->h)/2);
@@ -178,8 +163,7 @@ int main(void)
             }
             clear(screen);
             blit(buffer, screen, 0, 0, 0, 0, width, heigth);
-        }*/
-
+        }
 
         /*
         if((mouse_x >= 475 && mouse_x <= 555) && (mouse_y >= 539 && mouse_y <= 593) && mouse_b){
@@ -189,20 +173,16 @@ int main(void)
             if(certo){printf("deu certo\n");}else{printf("deu errado\n");}
             fazendo = 0;
         }*/
-
-        if(!(mouse_b & 1)){
+        if(!mouse_b){
             click = 0;
         }else{
             click = 1;
         }
         if(click){
-            while(mouse_b){}
             click = 0;
-            botoes(&Fazendo, pedidos);
+           botoes(&Fazendo, pedidos);
+
         }
-        //clear(screen);
-        blit(buffer, screen, 0, 0, 0, 0, width, heigth);
-        clear_to_color(buffer, makecol(255, 255, 255));
     }
     while(!key[KEY_ESC]);
 
