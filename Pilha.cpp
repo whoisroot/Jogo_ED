@@ -66,7 +66,7 @@ bool Pilha::Remover(int x){
 
 int Pilha::Percorre(){
     int x;
-    if(/*Atual->acima == NULL ||*/ Atual == NULL){
+    if(Atual == NULL){
         Atual = Base;
         return 0;
     }

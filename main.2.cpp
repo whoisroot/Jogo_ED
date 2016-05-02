@@ -9,32 +9,26 @@
 #define width   800
 
 int ComparaHamburguer(Fila pedidos, Hamburguer burgue){
-    bool works;
     int i, cmp = 0;
     Hamburguer *first = new Hamburguer;
-    first->vazio();
-    *first = pedidos.Remover(works);
-    if(works)
-        cout << "removeu burgue" << endl;
+    //first->vazio();
+    pedidos.Remover(*first);
     for(i = 0; i < 8; i++){
-        cout << "first " << i << ": " << first->retornaIngrediente(i) << endl;
-        cout << "burgue "<< i << ": " << burgue.retornaIngrediente(i) << endl;
         if(first->retornaIngrediente(i) == burgue.retornaIngrediente(i)){
             cmp++;
         }
     }
-    delete first;
-
     if(cmp == 8){
         return 1;
     }else{
         return 0;
     }
+    delete first;
 }
 
 int botoes(Hamburguer *atual, Fila pedidos, Pilha *ing, bool pao){
     int pos = 0, botoes_valor;
-    bool feito = 1, hamb_atual = 0, certo;
+    bool feito = 1, certo;
 
     //avalia X dos botões
     if(mouse_x > 0 && mouse_x < 120)
@@ -86,10 +80,9 @@ int botoes(Hamburguer *atual, Fila pedidos, Pilha *ing, bool pao){
     case 34:
         {
         cout << "ta feito" << endl;
-        certo = ComparaHamburguer(pedidos, *atual);
+        bool certo = ComparaHamburguer(pedidos, *atual);
         if(certo){cout << "deu certo\n";}else{cout << "deu errado\n";}
         feito = 0;
-        hamb_atual = 1;
         break;
         }
     case 44:
@@ -108,24 +101,23 @@ int botoes(Hamburguer *atual, Fila pedidos, Pilha *ing, bool pao){
             }
         }
     case 54:
+        {
         int lixo;
         ing->Remover(lixo);
-        hamb_atual++;
-        break;
+        }
 
     default:
-        //cout << pos << endl;
+        cout << pos << endl;
         break;
     }
-    botoes_valor = certo*1000 + hamb_atual*100 + feito*10 + pao;
+    botoes_valor = feito*10 + pao;
     return botoes_valor;
     }
 
 int main(void)
 {
-    int matrix_ing_hamb[10][8];
-    int i = 0, ing, botoes_valor, y = 535, hamb_atual = 0, pontuacao = 0;
-    bool fazendo = 0, bacon = 0, click = 0, pao = 0;
+    int i = 0, ing, botoes_valor, y = 535;
+    bool fazendo = 0, certo = 0, click = 0, pao = 0;
     Hamburguer Fazendo;
     Pilha *Ingredientes;
     srand(time(NULL));
@@ -134,14 +126,9 @@ int main(void)
     Fila pedidos;
     while(!pedidos.Cheia()){
         Hamburguer pediu;
-        for(i = 0; i < 8; i++){
-            matrix_ing_hamb[hamb_atual][i] = pediu.retornaIngrediente(i);
-        }
-        hamb_atual++;
-        //pediu.vazio();
+        pediu.vazio();
         pedidos.Inserir(pediu);
     }
-    hamb_atual = 0;
 
 //________________________________________Inicio_Allegro_______________________________________________________
     if (allegro_init() != 0){
@@ -151,27 +138,26 @@ int main(void)
     install_keyboard();
     install_mouse();
 
-    int pontua = text_length(font, "Pontuação: 00");
    /* set a graphics mode sized 320x200 */
     set_color_depth(24);
     set_gfx_mode(GFX_AUTODETECT_WINDOWED, width, heigth, 0, 0);
-    BITMAP *FUNDO   = load_bitmap("Imagens/fundo2.bmp", NULL);
-    BITMAP *HAMBURGUER_CIMA_ICONE = load_bitmap("Imagens/novos/hamburguercima_icone_2.bmp", NULL);
+    BITMAP *FUNDO   = load_bitmap("Imagens/fundo.bmp", NULL);
+    BITMAP *HAMBURGUER_CIMA_ICONE = load_bitmap("Imagens/hamburguercima_icone.bmp", NULL);
     BITMAP *HAMBURGUER_CIMA = load_bitmap("Imagens/hamburguercima.bmp", NULL);
-    BITMAP *HAMBURGUER_BAIXO_ICONE = load_bitmap("Imagens/novos/hamburguerbaixo_icone_2.bmp", NULL);
+    BITMAP *HAMBURGUER_BAIXO_ICONE = load_bitmap("Imagens/hamburguerbaixo_icone.bmp", NULL);
     BITMAP *HAMBURGUER_BAIXO = load_bitmap("Imagens/hamburguerbaixo.bmp", NULL);
-    BITMAP *CARNE_ICONE = load_bitmap("Imagens/novos/carne_icone.bmp", NULL);
+    BITMAP *CARNE_ICONE = load_bitmap("Imagens/carne_icone.bmp", NULL);
     BITMAP *CARNE = load_bitmap("Imagens/carne.bmp", NULL);
-    BITMAP *QUEIJO_ICONE = load_bitmap("Imagens/novos/queijo_icone.bmp", NULL);
+    BITMAP *QUEIJO_ICONE = load_bitmap("Imagens/queijo_icone.bmp", NULL);
     BITMAP *QUEIJO = load_bitmap("Imagens/queijo.bmp", NULL);
     BITMAP *ALFACE_ICONE = load_bitmap("Imagens/alface_icone.bmp", NULL);
-    BITMAP *ALFACE = load_bitmap("Imagens/novos/alface.bmp", NULL);
-    BITMAP *BACON_ICONE = load_bitmap("Imagens/novos/bacon_icon.bmp", NULL);
-    BITMAP *BACON = load_bitmap("Imagens/bacon2.bmp", NULL);
-    BITMAP *PICLES_ICONE = load_bitmap("Imagens/novos/Picles_icone.bmp", NULL);
+    BITMAP *ALFACE = load_bitmap("Imagens/alface.bmp", NULL);
+    BITMAP *BACON_ICONE = load_bitmap("Imagens/bacon_icone.bmp", NULL);
+    BITMAP *BACON = load_bitmap("Imagens/bacon.bmp", NULL);
+    BITMAP *PICLES_ICONE = load_bitmap("Imagens/Picles_icone.bmp", NULL);
     BITMAP *PICLES = load_bitmap("Imagens/Picles.bmp", NULL);
     BITMAP *TOMATE_ICONE = load_bitmap("Imagens/tomate_icone.bmp", NULL);
-    BITMAP *ESPATULA = load_bitmap("Imagens/novos/Espatula_2.bmp", NULL);
+    BITMAP *ESPATULA = load_bitmap("Imagens/Espatula.bmp", NULL);
     //BITMAP *TOMATE_ICONE = load_bitmap("Imagens/tomate_icone.bmp", NULL);
 
     BITMAP *buffer  = create_bitmap(width, heigth);
@@ -188,19 +174,12 @@ int main(void)
             Ingredientes = new Pilha;
             Fazendo.vazio();
             fazendo = 1;
-            y = 515;
+            y = 535;
         }
 
         //Imprime fundo e ícones dos botões
         //clear_to_color(buffer, makecol(255, 255, 255));
         blit(FUNDO, buffer, 0, 0, 0, 0, width, heigth);
-        textprintf_ex(buffer, font, width - (pontua + 20), 30, makecol(255, 255, 255), -1, "PONTUAÇÃO: %d", pontuacao);
-        textprintf_centre_ex(buffer, font, width/2, 130, makecol(255, 255, 255),
-            -1, "Hamburguer: %d                    Alface: %d", matrix_ing_hamb[hamb_atual][1], matrix_ing_hamb[hamb_atual][4]);
-        textprintf_centre_ex(buffer, font, width/2, 140, makecol(255, 255, 255),
-            -1, "Queijo: %d                        Tomate: %d", matrix_ing_hamb[hamb_atual][2], matrix_ing_hamb[hamb_atual][5]);
-        textprintf_centre_ex(buffer, font, width/2, 150, makecol(255, 255, 255),
-            -1, "Bacon: %d                         Picles: %d", matrix_ing_hamb[hamb_atual][3], matrix_ing_hamb[hamb_atual][6]);
         draw_sprite(buffer, CARNE_ICONE, 0, 180);
         draw_sprite(buffer, QUEIJO_ICONE, 0, 325);
         draw_sprite(buffer, BACON_ICONE, 0, 470);
@@ -219,24 +198,23 @@ int main(void)
         //cout << ing;
         while(ing){
             ing = Ingredientes->Percorre();
-            int y_pos = 515 - y;
+            int y_pos = 535 - y;
             switch(ing){
             case 1:
                 draw_sprite(buffer, HAMBURGUER_BAIXO, (width - HAMBURGUER_BAIXO->w)/2, (y_pos - HAMBURGUER_BAIXO->h));
+                //y += HAMBURGUER_BAIXO->h;
                 break;
             case 2:
-                draw_sprite(buffer, CARNE, (width-CARNE->w)/2, (y_pos + 100 + CARNE->h/2)/2);
-                y += 0.57 * CARNE->h;
+                draw_sprite(buffer, CARNE, (width-CARNE->w)/2, (y_pos+120+CARNE->h/2)/2);
+                y += CARNE->h - ;
                 break;
             case 3:
-                draw_sprite(buffer, QUEIJO, (width - QUEIJO->w)/2, (y_pos + 180 + QUEIJO->h/2)/2);
-                y += 0.4 * QUEIJO->h;
+                draw_sprite(buffer, QUEIJO, (width - QUEIJO->w)/2, (y_pos - QUEIJO->h));
+                y += QUEIJO->h;
                 break;
             case 4:
-                draw_sprite_ex(buffer, BACON, (width - BACON->w)/2, (y_pos + BACON->h/2)/2, 0, bacon);
-                bacon = Fazendo.retornaIngrediente(3)%2;
-                break;
-                //y += BACON->h;
+                draw_sprite(buffer, BACON, (width - BACON->w)/2, (y_pos - BACON->h));
+                y += BACON->h;
                 break;
             case 5:
                 cout << "acabou o alface" << endl;
@@ -269,11 +247,9 @@ int main(void)
             click = 0;
             //cout << "x: " << mouse_x << "\ny: " << mouse_y << endl;
             botoes_valor = botoes(&Fazendo, pedidos, Ingredientes, pao);
-            pontuacao += (botoes_valor/1000)*75;
-            hamb_atual += (botoes_valor/100)%10;
-            fazendo = ((botoes_valor/10)%10)%10;
+            fazendo = botoes_valor/10;
             pao = botoes_valor%10;
-            //cout << "pao: " << botoes_valor%10 << " fazendo: "<< fazendo << " hamb_atual: " << hamb_atual << endl;
+            //cout << "pao: " << botoes_valor%10 << endl;
         }
         //clear(screen);
         blit(buffer, screen, 0, 0, 0, 0, width, heigth);

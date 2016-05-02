@@ -44,16 +44,22 @@ bool Fila::Inserir(Hamburguer x){
 	}
 }
 
-bool Fila::Remover(Hamburguer x){
+Hamburguer Fila::Remover(bool fun){
 	Node *q;
-	if (Vazia())
-		return false;
-	else{
+	if (Vazia()){
+        fun = false;
+		return q->h;
+	}else{
 		tam--;
 		q = Primeiro;
-		x = Primeiro->h;
+		//x = Primeiro->h;
 		Primeiro = Primeiro->next;
-		delete q;
-		return true;
+        fun = true;
+		return q->h;
 	}
+}
+
+int Fila::atualRetornaIngrediente(int i){
+    int x = Atual->h.retornaIngrediente(i);
+    return x;
 }

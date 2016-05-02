@@ -12,14 +12,14 @@ Hamburguer::Hamburguer(){
 	Ingredientes[1] = rand() %3+1;
 	// Queijo
 	Ingredientes[2] = rand() %3;
-	// Presunto
-	Ingredientes[3] = rand() %3;
+	// Bacon
+	Ingredientes[3] = rand() %2;
 	// Alface
-	Ingredientes[4] = rand() %2;
+	Ingredientes[4] = 0; //rand() %2;
 	// Tomate
-	Ingredientes[5] = rand() %2;
-	// Cebola
-	Ingredientes[6] = rand() %2;
+	Ingredientes[5] = 0; //rand() %2;
+	// Picles
+	Ingredientes[6] = 0; //rand() %2;
 }
 
 int Hamburguer::retornaIngrediente(int i){
@@ -34,9 +34,9 @@ void Hamburguer::vazio(){
 }
 
 void Hamburguer::poeIngrediente(int i){
-    int X = Ingredientes[i];
+    /*int X = Ingredientes[i];
     X++;
-    cout << "Antes: " << i << " = " << Ingredientes[i] << "\n X = " << X << endl;
-    Ingredientes[i] = X;
+    cout << "Antes: " << i << " = " << Ingredientes[i] << "\n X = " << X << endl;*/
+    Ingredientes[i] += 1;
     cout << "Depois: " << i << " = " << Ingredientes[i]<< endl;
 }

@@ -9,32 +9,28 @@
 #define width   800
 
 int ComparaHamburguer(Fila pedidos, Hamburguer burgue){
-    bool works;
     int i, cmp = 0;
     Hamburguer *first = new Hamburguer;
-    first->vazio();
-    *first = pedidos.Remover(works);
-    if(works)
+    //first->vazio();
+    if(pedidos.Remover(*first))
         cout << "removeu burgue" << endl;
     for(i = 0; i < 8; i++){
-        cout << "first " << i << ": " << first->retornaIngrediente(i) << endl;
-        cout << "burgue "<< i << ": " << burgue.retornaIngrediente(i) << endl;
+        cout << i << ": " << first->retornaIngrediente(i) << endl;
         if(first->retornaIngrediente(i) == burgue.retornaIngrediente(i)){
             cmp++;
         }
     }
-    delete first;
-
     if(cmp == 8){
         return 1;
     }else{
         return 0;
     }
+    delete first;
 }
 
 int botoes(Hamburguer *atual, Fila pedidos, Pilha *ing, bool pao){
     int pos = 0, botoes_valor;
-    bool feito = 1, hamb_atual = 0, certo;
+    bool feito = 1, hamb_atual = 0;
 
     //avalia X dos botões
     if(mouse_x > 0 && mouse_x < 120)
@@ -86,7 +82,7 @@ int botoes(Hamburguer *atual, Fila pedidos, Pilha *ing, bool pao){
     case 34:
         {
         cout << "ta feito" << endl;
-        certo = ComparaHamburguer(pedidos, *atual);
+        bool certo = ComparaHamburguer(pedidos, *atual);
         if(certo){cout << "deu certo\n";}else{cout << "deu errado\n";}
         feito = 0;
         hamb_atual = 1;
@@ -117,14 +113,14 @@ int botoes(Hamburguer *atual, Fila pedidos, Pilha *ing, bool pao){
         //cout << pos << endl;
         break;
     }
-    botoes_valor = certo*1000 + hamb_atual*100 + feito*10 + pao;
+    botoes_valor = hamb_atual*100 + feito*10 + pao;
     return botoes_valor;
     }
 
 int main(void)
 {
     int matrix_ing_hamb[10][8];
-    int i = 0, ing, botoes_valor, y = 535, hamb_atual = 0, pontuacao = 0;
+    int i = 0, ing, botoes_valor, y = 535, hamb_atual = 0;
     bool fazendo = 0, bacon = 0, click = 0, pao = 0;
     Hamburguer Fazendo;
     Pilha *Ingredientes;
@@ -151,11 +147,10 @@ int main(void)
     install_keyboard();
     install_mouse();
 
-    int pontua = text_length(font, "Pontuação: 00");
    /* set a graphics mode sized 320x200 */
     set_color_depth(24);
     set_gfx_mode(GFX_AUTODETECT_WINDOWED, width, heigth, 0, 0);
-    BITMAP *FUNDO   = load_bitmap("Imagens/fundo2.bmp", NULL);
+    BITMAP *FUNDO   = load_bitmap("Imagens/fundo.bmp", NULL);
     BITMAP *HAMBURGUER_CIMA_ICONE = load_bitmap("Imagens/novos/hamburguercima_icone_2.bmp", NULL);
     BITMAP *HAMBURGUER_CIMA = load_bitmap("Imagens/hamburguercima.bmp", NULL);
     BITMAP *HAMBURGUER_BAIXO_ICONE = load_bitmap("Imagens/novos/hamburguerbaixo_icone_2.bmp", NULL);
@@ -188,19 +183,18 @@ int main(void)
             Ingredientes = new Pilha;
             Fazendo.vazio();
             fazendo = 1;
-            y = 515;
+            y = 535;
         }
 
         //Imprime fundo e ícones dos botões
         //clear_to_color(buffer, makecol(255, 255, 255));
         blit(FUNDO, buffer, 0, 0, 0, 0, width, heigth);
-        textprintf_ex(buffer, font, width - (pontua + 20), 30, makecol(255, 255, 255), -1, "PONTUAÇÃO: %d", pontuacao);
-        textprintf_centre_ex(buffer, font, width/2, 130, makecol(255, 255, 255),
-            -1, "Hamburguer: %d                    Alface: %d", matrix_ing_hamb[hamb_atual][1], matrix_ing_hamb[hamb_atual][4]);
-        textprintf_centre_ex(buffer, font, width/2, 140, makecol(255, 255, 255),
-            -1, "Queijo: %d                        Tomate: %d", matrix_ing_hamb[hamb_atual][2], matrix_ing_hamb[hamb_atual][5]);
-        textprintf_centre_ex(buffer, font, width/2, 150, makecol(255, 255, 255),
-            -1, "Bacon: %d                         Picles: %d", matrix_ing_hamb[hamb_atual][3], matrix_ing_hamb[hamb_atual][6]);
+        textprintf_centre_ex(buffer, font, width/2, 130, makecol(164, 12, 12),
+            -1, "Hamburguer: %d                    Alface: %d", matrix_ing_hamb[hamb_atual][1), matrix_ing_hamb[hamb_atual][4));
+        textprintf_centre_ex(buffer, font, width/2, 140, makecol(164, 12, 12),
+            -1, "Queijo: %d                        Tomate: %d", matrix_ing_hamb[hamb_atual][2), matrix_ing_hamb[hamb_atual][5));
+        textprintf_centre_ex(buffer, font, width/2, 150, makecol(164, 12, 12),
+            -1, "Bacon: %d                         Picles: %d", matrix_ing_hamb[hamb_atual][3), matrix_ing_hamb[hamb_atual][6));
         draw_sprite(buffer, CARNE_ICONE, 0, 180);
         draw_sprite(buffer, QUEIJO_ICONE, 0, 325);
         draw_sprite(buffer, BACON_ICONE, 0, 470);
@@ -219,18 +213,19 @@ int main(void)
         //cout << ing;
         while(ing){
             ing = Ingredientes->Percorre();
-            int y_pos = 515 - y;
+            int y_pos = 535 - y;
             switch(ing){
             case 1:
                 draw_sprite(buffer, HAMBURGUER_BAIXO, (width - HAMBURGUER_BAIXO->w)/2, (y_pos - HAMBURGUER_BAIXO->h));
+                //y += HAMBURGUER_BAIXO->h;
                 break;
             case 2:
                 draw_sprite(buffer, CARNE, (width-CARNE->w)/2, (y_pos + 100 + CARNE->h/2)/2);
-                y += 0.57 * CARNE->h;
+                y += 0.57 * CARNE->h;// - 60;
                 break;
             case 3:
                 draw_sprite(buffer, QUEIJO, (width - QUEIJO->w)/2, (y_pos + 180 + QUEIJO->h/2)/2);
-                y += 0.4 * QUEIJO->h;
+                y += 0.4 * QUEIJO->h;// - 70;
                 break;
             case 4:
                 draw_sprite_ex(buffer, BACON, (width - BACON->w)/2, (y_pos + BACON->h/2)/2, 0, bacon);
@@ -269,9 +264,8 @@ int main(void)
             click = 0;
             //cout << "x: " << mouse_x << "\ny: " << mouse_y << endl;
             botoes_valor = botoes(&Fazendo, pedidos, Ingredientes, pao);
-            pontuacao += (botoes_valor/1000)*75;
-            hamb_atual += (botoes_valor/100)%10;
-            fazendo = ((botoes_valor/10)%10)%10;
+            hamb_atual += botoes_valor/100;
+            fazendo = (botoes_valor/10)%10;
             pao = botoes_valor%10;
             //cout << "pao: " << botoes_valor%10 << " fazendo: "<< fazendo << " hamb_atual: " << hamb_atual << endl;
         }
