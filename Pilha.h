@@ -23,4 +23,4 @@ public:
     bool Vazia();
     bool Cheia();
     int Percorre();
-}
+};

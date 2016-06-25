@@ -17,8 +17,8 @@ private:
 public:
 	Fila();
 	bool Inserir(Hamburguer x);
-	bool Remover(Hamburguer x);
+	Hamburguer Remover(bool fun);
 	bool Vazia();
 	bool Cheia();
-	Node *Atualpub = Atual;
+	int atualRetornaIngrediente(int i);
 };
